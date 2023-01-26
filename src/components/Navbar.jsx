@@ -1,6 +1,7 @@
 import React from 'react'
 import { useContext } from 'react'
 import {WalletAuthContext} from '../contexts/AuthContext'
+import { Link } from 'react-router-dom';
 
 
 function Navbar() {
@@ -16,10 +17,10 @@ function Navbar() {
     <div className="collapse navbar-collapse" id="navbarSupportedContent">
       <ul className="navbar-nav me-auto mb-2 mb-lg-0">
         <li className="nav-item">
-          <a className="nav-link active" aria-current="page" href="#">Home</a>
+          <Link className="nav-link active" aria-current="page" to="/">Opening Account</Link>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href="#">Link</a>
+          <Link className="nav-link active" aria-current="page" to="/login">Login</Link>
         </li>
       </ul>
         <button className={`btn btn-outline-success  ${account != null ? "disabled" : ""}`} type="submit"  onClick={ConnectWallet}>{account != null ? `Account : ${account.substr(0,5)}...${account.substr(-4)}` : "Connect"}</button>

@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom'
 
 export const WalletAuthContext = React.createContext();
 
-export const CONTRACT_ADDRESS = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+export const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 
 /**
@@ -40,25 +40,6 @@ const ABI = [
       }
     ],
     "name": "AlertMsg",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "flag",
-        "type": "bool"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "msg",
-        "type": "string"
-      }
-    ],
-    "name": "Message",
     "type": "event"
   },
   {
@@ -180,6 +161,42 @@ const ABI = [
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "VisitAccount",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "useraddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "saving_amount",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct User.UserDeatails",
+        "name": "myaccount",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
@@ -226,7 +243,7 @@ const ABI = [
     "stateMutability": "payable",
     "type": "receive"
   }
-]
+];
 
 function AuthContext({children}) {
     const navigate = useNavigate();
@@ -235,6 +252,8 @@ function AuthContext({children}) {
     const [contract,setContract] = useState()
     const [checkAccount,setcheckAccount] = useState(false)
     const [flag,setFlag] = useState({status:"",msg:""});
+    const [exist,setExist] = useState(false)
+    const [accountDetails,setDetails] = useState()
 
 
     async function ConnectWallet(){
@@ -290,10 +309,10 @@ function AuthContext({children}) {
                   status:false,
                   msg:<div class="alert alert-danger" role="alert">
                   Yor account is already exist...
+                  Go and Login
                 </div>
               });
               setcheckAccount(true)
-              navigate("/profile");
               setTimeout(()=>{
                   setFlag({
                       status:"",
@@ -301,6 +320,55 @@ function AuthContext({children}) {
                   });
               },2000)
           }
+  }
+
+  async function LoginAccount(address){
+    try{
+        const isAccount_Exist = await contract.methods.VisitAccount(address).call()
+        console.log(isAccount_Exist)
+        if(isAccount_Exist.length > 0){
+            setFlag({
+                status:true,
+                msg:<div class="alert alert-success" role="alert">
+                Your account has been found
+              </div>
+            });
+            setcheckAccount(true);
+            setTimeout(()=>{
+                setFlag({
+                    status:"",
+                    msg:""
+                });
+                navigate('/profile')
+            },2000)
+        }
+    }catch(err){
+      console.log(err)
+        setFlag({
+            status:false,
+            msg:<div class="alert alert-danger" role="alert">
+            Yor account has not been exist...'Please go and create a account...'
+          </div>
+        });
+        setcheckAccount(true)
+        setTimeout(()=>{
+            setFlag({
+                status:"",
+                msg:""
+            });
+        },2000)
+    }
+}
+
+  async function checkAccountExist(address){
+    try{
+      const accountDetails = await contract.methods.GetAccount(address).call();
+      console.log(accountDetails)
+      setDetails([...accountDetails])
+      setExist(true);
+    }catch(e){
+      setExist(false);
+    }
   }
 
   return <WalletAuthContext.Provider value={{
@@ -311,6 +379,10 @@ function AuthContext({children}) {
     flag:flag,
     checkAccount:checkAccount,
     setcheckAccount:setcheckAccount,
+    checkAccountExist:checkAccountExist,
+    exist:exist,
+    accountDetails:accountDetails,
+    LoginAccount:LoginAccount,
     contract:contract
   }}>
     {children}

@@ -1,12 +1,14 @@
 import React,{useContext,useState} from 'react';
-import {WalletAuthContext,CONTRACT_ADDRESS} from '../contexts/AuthContext'
+import { useEffect } from 'react';
+import {WalletAuthContext} from '../contexts/AuthContext'
+import {useNavigate} from 'react-router-dom'
 
 function AcoountCreateForm() {
+    const navigate = useNavigate()
     const [name,setName] = useState();
     const [address,setAddress] = useState();
     const [error,setError] = useState({status:"",msg:""});
-    const {account,OpeningAccount,flag,checkAccount,setcheckAccount} = useContext(WalletAuthContext)
-
+    const {account,OpeningAccount,flag,checkAccountExist,setcheckAccount,exist} = useContext(WalletAuthContext);
 
     async function createAccount(e){
         e.preventDefault();
@@ -35,6 +37,7 @@ function AcoountCreateForm() {
             }
         }
     }
+
   return (
     <div className="container mt-5">
         {

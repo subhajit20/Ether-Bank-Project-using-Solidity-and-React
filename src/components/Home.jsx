@@ -9,7 +9,7 @@ function Home() {
 
     useEffect(()=>{
         if(!checkAccount){
-            navigate('/')
+          navigate('/')
         }
     },[checkAccount])
   return (
