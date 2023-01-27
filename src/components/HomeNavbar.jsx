@@ -18,7 +18,7 @@ function HomeNavbar() {
           <Link to="/profile" className="nav-link active" aria-current="page">Profile</Link>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href="#">Link</a>
+          <Link to="/deposite" className="nav-link active" aria-current="page">Deposite</Link>
         </li>
       </ul>
         <button className={`btn btn-outline-success  ${account != null ? "disabled" : ""}`} type="submit" >{account != null ? `Account : ${account.substr(0,5)}...${account.substr(-4)}` : "Connect"}</button>

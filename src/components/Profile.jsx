@@ -4,15 +4,18 @@ import { useContext } from 'react';
 import {WalletAuthContext} from '../contexts/AuthContext';
 
 function Profile() {
-  const {account,checkAccountExist,accountDetails} = useContext(WalletAuthContext);
+  const {exist,account,checkAccountExist,accountDetails} = useContext(WalletAuthContext);
 
   useEffect(()=>{
-    checkAccountExist(account);
-    console.log(accountDetails)
+      checkAccountExist(account);
   },[])
   return (
     <div>
-      <h1>This is user's profile</h1>
+      {accountDetails != undefined ? <div>
+        <p>Name : {accountDetails[0]}</p>
+        <p>Address : {accountDetails[1].substr(0,5)}...{accountDetails[1].substr(-4)}</p>
+        <p>Deposite Amount : {accountDetails[2]}</p>
+      </div> : "Ookkk"}
     </div>
   )
 }

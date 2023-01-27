@@ -3,7 +3,7 @@ import { WalletAuthContext } from '../contexts/AuthContext';
 
 function Login() {
     const [address,setAddress] = useState();
-    const {LoginAccount} = useContext(WalletAuthContext);
+    const {LoginAccount,flag} = useContext(WalletAuthContext);
 
     function Login(e){
         e.preventDefault();
@@ -11,6 +11,9 @@ function Login() {
     }
   return (
     <div className='container'>
+        {
+            flag.status ? flag.msg : flag.msg
+        }
         <form>
             <div className="mb-3">
                 <label for="exampleInputEmail1" className="form-label">Enter Account Public Key</label>

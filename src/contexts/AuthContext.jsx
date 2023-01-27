@@ -324,8 +324,9 @@ function AuthContext({children}) {
 
   async function LoginAccount(address){
     try{
-        const isAccount_Exist = await contract.methods.VisitAccount(address).call()
-        console.log(isAccount_Exist)
+        const isAccount_Exist = await contract.methods.VisitAccount(address).call();
+
+  
         if(isAccount_Exist.length > 0){
             setFlag({
                 status:true,
@@ -333,12 +334,14 @@ function AuthContext({children}) {
                 Your account has been found
               </div>
             });
-            setcheckAccount(true);
+            setDetails([...isAccount_Exist])
+            setExist(true);
             setTimeout(()=>{
                 setFlag({
                     status:"",
                     msg:""
                 });
+                setcheckAccount(true);
                 navigate('/profile')
             },2000)
         }
@@ -350,7 +353,7 @@ function AuthContext({children}) {
             Yor account has not been exist...'Please go and create a account...'
           </div>
         });
-        setcheckAccount(true)
+        setExist(false);
         setTimeout(()=>{
             setFlag({
                 status:"",
@@ -363,11 +366,24 @@ function AuthContext({children}) {
   async function checkAccountExist(address){
     try{
       const accountDetails = await contract.methods.GetAccount(address).call();
-      console.log(accountDetails)
       setDetails([...accountDetails])
       setExist(true);
     }catch(e){
       setExist(false);
+    }
+  }
+
+  async function DepositeAmountToBank(amount){
+    try{
+      let web3 = new Web3(window.ethereum);
+      const depositemoney = await contract.methods.DepositeAmount().send({
+        from:account,
+        to:CONTRACT_ADDRESS,
+        value: web3.utils.toWei(amount.toString(), 'wei'),
+      });
+      console.log(depositemoney)
+    }catch(e){
+      console.log(e)
     }
   }
 
@@ -383,6 +399,7 @@ function AuthContext({children}) {
     exist:exist,
     accountDetails:accountDetails,
     LoginAccount:LoginAccount,
+    DepositeAmountToBank:DepositeAmountToBank,
     contract:contract
   }}>
     {children}

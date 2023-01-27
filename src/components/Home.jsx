@@ -6,7 +6,6 @@ import {WalletAuthContext} from '../contexts/AuthContext'
 function Home() {
     const navigate = useNavigate();
     const {checkAccount} = useContext(WalletAuthContext);
-
     useEffect(()=>{
         if(!checkAccount){
           navigate('/')

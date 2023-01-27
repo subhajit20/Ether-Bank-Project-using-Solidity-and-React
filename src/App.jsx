@@ -6,6 +6,7 @@ import RegisterComponent from './components/RegisterComponent'
 import Home from './components/Home'
 import Profile from './components/Profile';
 import Login from './components/Login'
+import Deposite from './components/Deposite'
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
         </Route>
         <Route element={<Home/>}>
           <Route path='/profile' element={<Profile/>}/>
+          <Route path='/deposite' element={<Deposite/>}/>
         </Route>
       </Routes>
     </div>
