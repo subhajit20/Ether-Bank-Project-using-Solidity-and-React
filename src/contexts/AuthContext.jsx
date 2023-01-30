@@ -373,15 +373,55 @@ function AuthContext({children}) {
     }
   }
 
-  async function DepositeAmountToBank(amount){
+  async function DepositeAmountToBank(amount,currency){
     try{
       let web3 = new Web3(window.ethereum);
       const depositemoney = await contract.methods.DepositeAmount().send({
         from:account,
         to:CONTRACT_ADDRESS,
-        value: web3.utils.toWei(amount.toString(), 'wei'),
+        value: web3.utils.toWei(amount.toString(), currency.toString()),
       });
-      console.log(depositemoney)
+      console.log(depositemoney);
+
+      setFlag({
+        status:true,
+        msg:<div class="alert alert-success" role="alert">
+        Your have succesfully desposited amount to Ether Bank...
+      </div>
+      });
+
+    setTimeout(()=>{
+      setFlag({
+        status:"",
+        msg:""
+    });
+    },3000)
+    }catch(e){
+      console.log(e)
+      setFlag({
+        status:false,
+        msg:<div class="alert alert-success" role="alert">
+        Your have insufficient amount to deposite to Ether Bank...Kindly Check your Metamask Account Balance and put amount according to your current balance...
+      </div>
+      });
+
+    setTimeout(()=>{
+      setFlag({
+        status:"",
+        msg:""
+    });
+    },3000)
+    }
+  }
+
+  async function WithdrawAmountToSelf(amount){
+    try{
+      let web3 = new Web3(window.ethereum);
+      const withdarw_result = await contract.methods.WithDraw(amount).send({
+        from:account,
+        to:CONTRACT_ADDRESS,
+      });
+      console.log(withdarw_result)
     }catch(e){
       console.log(e)
     }
@@ -400,6 +440,7 @@ function AuthContext({children}) {
     accountDetails:accountDetails,
     LoginAccount:LoginAccount,
     DepositeAmountToBank:DepositeAmountToBank,
+    WithdrawAmountToSelf:WithdrawAmountToSelf,
     contract:contract
   }}>
     {children}
