@@ -8,16 +8,16 @@ function AcoountCreateForm() {
     const [name,setName] = useState();
     const [address,setAddress] = useState();
     const [error,setError] = useState({status:"",msg:""});
-    const {account,OpeningAccount,flag,checkAccountExist,setcheckAccount,exist} = useContext(WalletAuthContext);
+    const {account,OpeningAccount,flag,setcheckAccount,loading,setLoading} = useContext(WalletAuthContext);
 
-    async function createAccount(e){
+    function createAccount(e){
         e.preventDefault();
-
+        setLoading(true)
         if(name == '' || address != account){
             setcheckAccount(false)
             setError({
                 status:true,
-                msg:<div class="alert alert-danger" role="alert">
+                msg:<div className="alert alert-danger" role="alert">
                     Fill The form correctly...
               </div>
             });
@@ -30,7 +30,7 @@ function AcoountCreateForm() {
             },2000)
         }else{
             try{
-                await OpeningAccount(address,name);
+                OpeningAccount(address,name);
             }catch(e){
                 console.log(flag)
                 console.log(e)
@@ -49,14 +49,18 @@ function AcoountCreateForm() {
         {
             account != null ? <form>
             <div className="mb-3">
-                <label for="exampleInputEmail1" className="form-label">Enter Account Public Key</label>
+                <label htmlFor="exampleInputEmail1" className="form-label">Enter Account Public Key</label>
                 <input type="text" onChange={(e)=>setAddress(e.target.value)} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"/>
             </div>
             <div className="mb-3">
-                <label for="exampleInputPassword1" className="form-label">Enter Name</label>
+                <label htmlFor="exampleInputPassword1" className="form-label">Enter Name</label>
                 <input type="text" onChange={(e)=>setName(e.target.value)} className="form-control" id="exampleInputPassword1"/>
             </div>
-            <button type="submit" className="btn btn-primary" onClick={createAccount}>Create Account</button>
+            {loading ? <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+                </div> : 
+                <button type="submit" className="btn btn-primary" onClick={createAccount}>Create Account</button>}
+            
         </form> : "Please Connect Your Metamask Wallet At first"
         }
     </div>

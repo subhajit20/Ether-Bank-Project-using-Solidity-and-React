@@ -36,7 +36,7 @@ function Deposite() {
             </div>
             <div className="col-auto">
                 <span id="passwordHelpInline" className="form-text">
-                At least 1 or above wei should be deposite.
+                At least 10 or above wei should be deposite.
                 </span>
             </div>
             <button type="button" className="btn btn-warning" onClick={DepositeToBank}>Deposite</button>

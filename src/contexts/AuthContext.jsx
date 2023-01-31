@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom'
 
 export const WalletAuthContext = React.createContext();
 
-export const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+export const CONTRACT_ADDRESS = "0xA8100bEcCF4D5aFEbDc835D5E65bC35E18FF368F";
 
 
 /**
@@ -254,6 +254,7 @@ function AuthContext({children}) {
     const [flag,setFlag] = useState({status:"",msg:""});
     const [exist,setExist] = useState(false)
     const [accountDetails,setDetails] = useState()
+    const [loading,setLoading] = useState(false)
 
 
     async function ConnectWallet(){
@@ -282,6 +283,7 @@ function AuthContext({children}) {
     async function OpeningAccount(address,name){
           try{
               console.log(address)
+              setLoading(true)
               let web3 = new Web3(window.ethereum);
               const account_opening = await contract.methods.OpeningAccount(address,name).send({
                   from:address,
@@ -302,7 +304,8 @@ function AuthContext({children}) {
                           msg:""
                       });
                       navigate('/profile')
-                  },2000)
+                    },2000)
+                    setLoading(false)
               }
           }catch(err){
               setFlag({
@@ -319,8 +322,9 @@ function AuthContext({children}) {
                       msg:""
                   });
               },2000)
+              setLoading(false)
+            }
           }
-  }
 
   async function LoginAccount(address){
     try{
@@ -346,7 +350,6 @@ function AuthContext({children}) {
             },2000)
         }
     }catch(err){
-      console.log(err)
         setFlag({
             status:false,
             msg:<div class="alert alert-danger" role="alert">
@@ -375,32 +378,48 @@ function AuthContext({children}) {
 
   async function DepositeAmountToBank(amount,currency){
     try{
-      let web3 = new Web3(window.ethereum);
-      const depositemoney = await contract.methods.DepositeAmount().send({
-        from:account,
-        to:CONTRACT_ADDRESS,
-        value: web3.utils.toWei(amount.toString(), currency.toString()),
-      });
-      console.log(depositemoney);
+      if(amount < 10 && currency == "wei" ){
+            setFlag({
+              status:false,
+              msg:<div class="alert alert-danger" role="alert">
+              You have to put 10 or above wei for deposite
+            </div>
+            });
+      
+          setTimeout(()=>{
+            setFlag({
+              status:"",
+              msg:""
+          });
+          },3000)
+      }else{
+              let web3 = new Web3(window.ethereum);
+              const depositemoney = await contract.methods.DepositeAmount().send({
+                from:account,
+                to:CONTRACT_ADDRESS,
+                value: web3.utils.toWei(amount.toString(), currency.toString()),
+              });
+              console.log(depositemoney);
 
-      setFlag({
-        status:true,
-        msg:<div class="alert alert-success" role="alert">
-        Your have succesfully desposited amount to Ether Bank...
-      </div>
-      });
+              setFlag({
+                status:true,
+                msg:<div class="alert alert-success" role="alert">
+                Your have succesfully desposited amount to Ether Bank...
+              </div>
+              });
 
-    setTimeout(()=>{
-      setFlag({
-        status:"",
-        msg:""
-    });
-    },3000)
+            setTimeout(()=>{
+              setFlag({
+                status:"",
+                msg:""
+            });
+            },3000)
+      }
     }catch(e){
       console.log(e)
       setFlag({
         status:false,
-        msg:<div class="alert alert-success" role="alert">
+        msg:<div class="alert alert-danger" role="alert">
         Your have insufficient amount to deposite to Ether Bank...Kindly Check your Metamask Account Balance and put amount according to your current balance...
       </div>
       });
@@ -441,7 +460,9 @@ function AuthContext({children}) {
     LoginAccount:LoginAccount,
     DepositeAmountToBank:DepositeAmountToBank,
     WithdrawAmountToSelf:WithdrawAmountToSelf,
-    contract:contract
+    loading:loading,
+    setLoading:setLoading,
+    contract:contract,
   }}>
     {children}
   </WalletAuthContext.Provider>

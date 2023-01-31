@@ -9,8 +9,8 @@ function Withdrawl() {
         WithdrawAmountToSelf(withdaramount)
     }
   return (
-    <div>
-        <div className="row g-3 align-items-center">
+    <div style={{"display":"flex","justifyContent":"center","alignItems":"center"}}>
+        <div className="row g-3 align-items-center mt-5">
             <div className="col-auto">
                 <label for="inputPassword6" className="col-form-label">Enter Ether Amount</label>
             </div>
@@ -22,8 +22,8 @@ function Withdrawl() {
                 At least 1 or above wei should be deposite.
                 </span>
             </div>
-            </div>
             <button type="button" class="btn btn-warning" onClick={withdarwMyAmount}>Deposite</button>
+            </div>
     </div>
   )
 }
